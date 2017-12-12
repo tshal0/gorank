@@ -3,6 +3,9 @@
 // Purpose:		Contains all problem solutions submitted to HackerRank.com  
 package gorank
 import "fmt"
+import _ "strconv"
+import math "math"
+
 
 // main running application. 
 func GoRank() {
@@ -20,7 +23,18 @@ func Anagrams() {
 	// Output should be an integer (total deletions to be made). 
 
 	// A and B are sets of characters in the set of all lowercase English letters (a-z). 
+	var first, second string
+	var counter [26]int64
+	var result uint32
+	fmt.Scanf("%s", &first)
+	fmt.Scanf("%s", &second)
+	
+	// Now we have first, second, counter, and result. 
 
+	for _, c := range(first) { counter[c - 'a']++ }
+	for _, c := range(second) { counter[c - 'a']-- }
+	for _, count := range(counter) { result += Abs(count) }
+	fmt.Printf("%d", result)
 
 
 }
@@ -60,4 +74,23 @@ func IntScanln(n int) ([]int, error) {
 	n, err := fmt.Scanln(y...)
 	x = x[:n]
 	return x, err
+}
+
+func Min(x, y int64) int64 {
+    if x < y {
+        return x
+    }
+    return y
+}
+
+func Max(x, y int64) int64 {
+    if x > y {
+        return x
+    }
+    return y
+}
+
+func Abs(x int64) uint32 {
+	f_ret := float64(x)				// Convert to float64
+	return uint32(math.Abs(f_ret))	// Get Absolute val, convert to uint32 and return
 }
