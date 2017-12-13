@@ -6,11 +6,154 @@ import "fmt"
 import _ "strconv"
 import math "math"
 import _ "strings"
+import "sync"
+import "errors"
+
 
 
 // main running application. 
 func GoRank() {
-	RansomNote()
+	BalancedBrackets()
+}
+
+// Balanced Brackets algorithm
+
+// 		INPUT:
+// 		1. Single integer n, denoting number of strings
+// 		2. Each line i of the n subsequent lines consists of a single string s, denoting a sequence of brackets. 
+// 		CONSTRAINTS
+// 		1 <= n <= 10^3
+// 		1 <= len(s) <= 10^3
+
+func BalancedBrackets() {
+
+	var n int 
+	if _, err := fmt.Scanf("%d\n", &n); 	err != nil {
+		fmt.Println("Err")
+		return
+	}
+
+	lines := make([]string, n)
+	
+	for i := 0; i < n; i++ { 			// For each line of brackets to be entered
+		fmt.Scanf("%s\n", &lines[i]) 	// Scan in the string of brackets
+	}
+	for _, s := range lines {
+		if IsBalanced(s) {fmt.Println("YES")} else { fmt.Println("NO")}
+	}
+}
+
+func IsBalanced(line string) bool {
+	
+	if len(line) % 2 != 0 {return false}
+	s := NewStack()
+	for _, c := range line {	// Iterate over the string 
+		if c == '{' {				// If we have an opening bracket, push a closing one on
+			s.Push('}')
+		} else if c == '[' {
+			s.Push(']')
+		} else if c == '(' {
+			s.Push(')')
+		} else {							// Else, if the stack is empty or current bracket doesn't
+			if s.Len() == 0 || c != s.Peek() {	// match what's on the stack, print NO
+				return false
+			}
+			s.Pop()					// Pop the closing bracket off the stack
+		}
+	}
+	return s.Len() == 0;
+}
+
+// LINKED LIST STACK
+
+type (
+	Stack struct {
+		top *node
+		length int
+	}
+	node struct {
+		value interface{}
+		prev *node
+	}
+)
+
+func NewStack() *Stack {
+	return &Stack{nil, 0}
+}
+
+func (s *Stack) Len() int {
+	return s.length
+}
+
+func (s *Stack) Peek() interface{} {
+	if (s.length == 0) {return nil}
+	return s.top.value
+}
+
+func (s *Stack) Pop() interface{} {
+	if (s.length == 0) {return nil}
+	n := s.top
+	s.top = n.prev
+	s.length--
+	return n.value
+}
+
+func (s *Stack) Push(value interface{}) {
+	n := &node{value, s.top}
+	s.top = n
+	s.length++
+}
+// Good for most use cases, but slice stacks can be space intensive.
+
+type sliceStack struct {
+	lock sync.Mutex // you don't have to do this if you don't want thread safety
+	s []rune	
+	top *rune
+	Empty bool
+}
+
+func NewSliceStack() *sliceStack {
+   return &sliceStack {sync.Mutex{}, make([]rune,0), nil, true }
+}
+
+func (s *sliceStack) Push(v rune) {
+   s.lock.Lock()
+   defer s.lock.Unlock()
+
+   s.s = append(s.s, v)
+   s.Empty = false
+   s.top = &s.s[len(s.s)-1]
+}
+
+func (s *sliceStack) Pop() (rune, error) {
+   s.lock.Lock()
+   defer s.lock.Unlock()
+
+
+   l := len(s.s)
+   if l == 0 {
+	   return 0, errors.New("Empty Stack")
+   }
+   newLen := l-1
+   res := s.s[newLen]
+   s.s = s.s[:newLen]
+   s.Empty = (newLen == 0)
+   if !s.Empty {
+	   s.top = &s.s[len(s.s)-1]
+	} else {
+	   s.top = nil
+   }
+   return res, nil
+}
+
+func (s *sliceStack) Peek() (rune) {
+	var top rune
+	if !s.Empty { 
+		top = *s.top 
+	} else {
+		top = '\n'
+	}
+	return top
 }
 
 
