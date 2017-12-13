@@ -5,15 +5,83 @@ package gorank
 import "fmt"
 import _ "strconv"
 import math "math"
+import _ "strings"
 
 
 // main running application. 
 func GoRank() {
-	Anagrams()
+	RansomNote()
 }
 
-// ANAGRAMS ALGORITHM
 
+// Ransom Note algorithm
+
+// INPUT: 
+// 	1. 2 space delimited ints: (m, n) -> # words in magazine, # words in ransom note
+// 	2. m space delimited strings denoting magazine words (mword)
+// 	3. n space delimited strings denoting words in ransom note. (nword) 
+
+// CONSTRAINTS: 
+// 	1 <= m, n <= 30,000
+// 	1 <= mword.len, nword.len <= 5
+// 	All words are subsets of all English alphabetic letters (a-z) AND (A-Z)
+// 	All words are CASE-SENSITIVE
+
+// func IntScanln(n int) ([]int, error) {
+// 	x := make([]int, n)
+// 	y := make([]interface{}, len(x))
+// 	for i := range x {
+// 		y[i] = &x[i]
+// 	}
+// 	n, err := fmt.Scanln(y...)
+// 	x = x[:n]
+// 	return x, err
+// }
+
+func RansomNote() {
+	var mCount, nCount, n int
+	var err error
+
+	if _, err := fmt.Scanf("%d %d\n", &mCount, &nCount); 	err != nil {
+		fmt.Println("Err")
+		return
+	}
+
+	mInput := make([]interface{}, mCount)
+	nInput := make([]interface{}, nCount)
+	magazine := make([]string, mCount)
+	note := make([]string, nCount)
+
+	for i := range magazine { mInput[i] = &magazine[i]	}
+	for i := range note { nInput[i] = &note[i]	}
+
+	if n, err = fmt.Scan(mInput...); err != nil {fmt.Println(err)}
+	magazine = magazine[:n]
+	if n, err = fmt.Scan(nInput...); err != nil {fmt.Println(err)}
+	note = note[:n]
+
+	words := make(map[string]int)
+	result := "Yes"
+	for _, s := range magazine { words[s]++ }
+	for _, s := range note { 
+		if words[s] > 0 { words[s]-- } else { result = "No"; break } 
+	}
+
+	fmt.Println(result)
+
+
+
+
+
+
+
+
+
+}
+
+
+// ANAGRAMS ALGORITHM
+// Completed: 12/12/2017
 
 func Anagrams() {
 	fmt.Println("Initializing ANAGRAMS runtime...")
