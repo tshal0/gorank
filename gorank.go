@@ -8,13 +8,54 @@ import math "math"
 import _ "strings"
 import "sync"
 import "errors"
+import _ "container/heap"
 
 
 
 // main running application. 
 func GoRank() {
-	BalancedBrackets()
+	RunningMedianFunc()
+	
 }
+
+
+// Running Median algorithm
+// INPUT: 
+//		1. Single int (n) denoting the number of integers in the datastream
+// 		2. Each subsequent line (i) of the n lines contains int a_i, to be added to list. 
+// OUTPUT:
+// 		After each subsequent integer a_i, print the lists updated median on a newline as a single double precision number 
+// 		scaled to 1 decimal place. 
+
+func RunningMedianFunc() {
+	var n int
+	var runningMedian RunningMedian
+
+	// Actually surprised this works. Init expects a pointer receiver. 
+	runningMedian.Init()
+	
+	if _, err := fmt.Scanf("%d\n", &n); 	err != nil {
+		fmt.Println("Err")
+		return
+	}
+
+	for i := 0; i < n; i++ {
+		var newVal int
+		if _, err := fmt.Scanf("%d\n", &newVal); 	err != nil {
+			fmt.Println("Err")
+			return
+		}
+		runningMedian.InsertValue(newVal)
+		median := runningMedian.GetMedian()
+		fmt.Println("### MEDIAN ###")
+		fmt.Println(median)
+		fmt.Println("##############")
+
+	}
+
+}
+
+
 
 // Balanced Brackets algorithm
 
@@ -288,10 +329,10 @@ func IntScanln(n int) ([]int, error) {
 }
 
 func Min(x, y int64) int64 {
-    if x < y {
-        return x
+    if x > y {
+        return y
     }
-    return y
+    return x
 }
 
 func Max(x, y int64) int64 {
@@ -299,6 +340,14 @@ func Max(x, y int64) int64 {
         return x
     }
     return y
+}
+
+func MinMax(x, y int) (int,int) {
+	if x > y {
+		return y, x
+	} else {
+		return x, y
+	}
 }
 
 func Abs(x int64) uint32 {
