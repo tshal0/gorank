@@ -18,8 +18,7 @@ import "errors"
 
 // main running application. 
 func GoRank() {
-	RunningMedianFunc()
-	
+	TriesContactsFunc()
 }
 
 // Balanced Brackets algorithm
