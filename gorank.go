@@ -1,6 +1,11 @@
 // GoRank library
 // Created by: 	Thomas Shallenberger 12/12/2017
 // Purpose:		Contains all problem solutions submitted to HackerRank.com  
+
+// Easy challenges were thrown into the main gorank file. 
+// Hard challenges were spread to other files. 
+
+
 package gorank
 import "fmt"
 import _ "strconv"
@@ -8,7 +13,6 @@ import math "math"
 import _ "strings"
 import "sync"
 import "errors"
-import _ "container/heap"
 
 
 
@@ -17,45 +21,6 @@ func GoRank() {
 	RunningMedianFunc()
 	
 }
-
-
-// Running Median algorithm
-// INPUT: 
-//		1. Single int (n) denoting the number of integers in the datastream
-// 		2. Each subsequent line (i) of the n lines contains int a_i, to be added to list. 
-// OUTPUT:
-// 		After each subsequent integer a_i, print the lists updated median on a newline as a single double precision number 
-// 		scaled to 1 decimal place. 
-
-func RunningMedianFunc() {
-	var n int
-	var runningMedian RunningMedian
-
-	// Actually surprised this works. Init expects a pointer receiver. 
-	runningMedian.Init()
-	
-	if _, err := fmt.Scanf("%d\n", &n); 	err != nil {
-		fmt.Println("Err")
-		return
-	}
-
-	for i := 0; i < n; i++ {
-		var newVal int
-		if _, err := fmt.Scanf("%d\n", &newVal); 	err != nil {
-			fmt.Println("Err")
-			return
-		}
-		runningMedian.InsertValue(newVal)
-		median := runningMedian.GetMedian()
-		fmt.Println("### MEDIAN ###")
-		fmt.Println(median)
-		fmt.Println("##############")
-
-	}
-
-}
-
-
 
 // Balanced Brackets algorithm
 
