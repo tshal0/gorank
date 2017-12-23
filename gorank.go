@@ -18,7 +18,7 @@ import "errors"
 
 // main running application. 
 func GoRank() {
-	TriesContactsFunc()
+	BubbleSortFunc()
 }
 
 // Balanced Brackets algorithm
