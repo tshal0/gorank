@@ -34,6 +34,7 @@ import _ "strings"
 func TriesContactsFunc(){
 	// number of ops
 	var n int
+	trie := NewTrie()
 
 	if _, err := fmt.Scanf("%d\n", &n); 	err != nil {
 		fmt.Println("Err")
@@ -49,9 +50,15 @@ func TriesContactsFunc(){
 		}
 
 		// Read in the op and val. Time for Tries. 
-		fmt.Printf("%s\n", op + " - " + val)
+		if op == "add" {
+			// Add the string to the Trie. 
+			trie.ExistsOrAdd(val)
+		} else {
+
+		}
 
 	}
+	trie.PrintTrie()
 }
 
 // Design a Trie. 
@@ -66,12 +73,44 @@ type Trie struct {
 	stringEnd bool
 }
 
+func (r *Trie) PrintTrie() {
+	var runeVals []rune
+	for _, link := range r.childNodes {
+		runeVals = append(runeVals, link.value)
+		link.link.PrintTrie()
+	}
+	if len(runeVals) > 0 {
+		fmt.Println(string([]byte(string(runeVals))))
+	}
+}
+
 func findLink(links []TrieLink, val rune) (*Trie, bool) {
+	for _, link := range links {
+		if link.value == val {
+			return link.link, true
+		}
+	}
 	return nil, false
 }
 
-func (r *Trie) FetchAndUpdateOrCreate(s string) (*Trie, bool) {
-	return nil, false
+func (r *Trie) ExistsOrAdd(s string) (*Trie, bool) {
+	check := true 	// What is this?9
+	i := r 			// Why are we making a copy of this
+	for _, runeVal := range s {							// For each rune in string
+		trie, ok := findLink(i.childNodes, runeVal)		// Find the runeVal in current Trie's childNodes
+		if !ok {										// if runeVal doesn't exist in the current Tries childNodes
+			trie = new(Trie)							// Make a new trie
+			trie.childNodes = make([]TrieLink, 0)		// make new childNodes
+			i.childNodes = append(i.childNodes, TrieLink{value: runeVal, link:trie}) // add runeval to current Trie's childnodes
+		}
+		i = trie										// If runeVal does exist, set i = trie, loop
+	}
+	// After Looping over entire string and adding appropriate Trie nodes
+	if !i.stringEnd {			// if i.stringEnd is false
+		i.stringEnd = true		// we looped over entire string, so set stringEnd to true
+		check = false			// No idea what the check means
+	}
+	return i, check				// Return the last? trie and check
 }
 
 func NewTrie() *Trie {
