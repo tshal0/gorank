@@ -34,6 +34,7 @@ import _ "strings"
 func TriesContactsFunc(){
 	// number of ops
 	var n int
+	var counts []int
 	trie := NewTrie()
 
 	if _, err := fmt.Scanf("%d\n", &n); 	err != nil {
@@ -54,23 +55,31 @@ func TriesContactsFunc(){
 			// Add the string to the Trie. 
 			trie.ExistsOrAdd(val)
 		} else {
-
+			_, count := trie.FindPartial(val)
+			counts = append(counts, count)
 		}
-
 	}
-	trie.PrintTrie()
+	for _, count := range counts {
+		fmt.Println(count)
+	}
+	
 }
 
 // Design a Trie. 
 
 type TrieLink struct {
 	value rune
+	count int
 	link *Trie
 }
 
 type Trie struct {
-	childNodes []TrieLink
+	childNodes []*TrieLink
 	stringEnd bool
+}
+
+func NewTrie() *Trie {
+	return &Trie{stringEnd: true, childNodes: make([]*TrieLink, 0)}
 }
 
 func (r *Trie) PrintTrie() {
@@ -84,24 +93,25 @@ func (r *Trie) PrintTrie() {
 	}
 }
 
-func findLink(links []TrieLink, val rune) (*Trie, bool) {
+func findLink(links []*TrieLink, val rune, count int) (*Trie, bool, int) {
 	for _, link := range links {
 		if link.value == val {
-			return link.link, true
+			link.count = link.count + count			
+			return link.link, true, link.count
 		}
 	}
-	return nil, false
+	return nil, false, 0
 }
 
 func (r *Trie) ExistsOrAdd(s string) (*Trie, bool) {
 	check := true 	// What is this?9
 	i := r 			// Why are we making a copy of this
 	for _, runeVal := range s {							// For each rune in string
-		trie, ok := findLink(i.childNodes, runeVal)		// Find the runeVal in current Trie's childNodes
+		trie, ok, _ := findLink(i.childNodes, runeVal, 1)		// Find the runeVal in current Trie's childNodes
 		if !ok {										// if runeVal doesn't exist in the current Tries childNodes
 			trie = new(Trie)							// Make a new trie
-			trie.childNodes = make([]TrieLink, 0)		// make new childNodes
-			i.childNodes = append(i.childNodes, TrieLink{value: runeVal, link:trie}) // add runeval to current Trie's childnodes
+			trie.childNodes = make([]*TrieLink, 0)		// make new childNodes
+			i.childNodes = append(i.childNodes, &TrieLink{value: runeVal, link:trie, count: 1}) // add runeval to current Trie's childnodes
 		}
 		i = trie										// If runeVal does exist, set i = trie, loop
 	}
@@ -113,6 +123,20 @@ func (r *Trie) ExistsOrAdd(s string) (*Trie, bool) {
 	return i, check				// Return the last? trie and check
 }
 
-func NewTrie() *Trie {
-	return &Trie{stringEnd: true, childNodes: make([]TrieLink, 0)}
+func (r *Trie) FindPartial(s string) (*Trie, int) {
+
+	retTrie := r
+	fullPartialExists := true
+	count := 0
+	for _, runeVal := range s {
+		retTrie, fullPartialExists, count = findLink(retTrie.childNodes, runeVal, 0)
+		
+		if !fullPartialExists {
+			fullPartialExists = false
+			count = 0
+			break
+		}
+	}
+
+	return retTrie, count
 }
