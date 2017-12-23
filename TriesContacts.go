@@ -51,9 +51,29 @@ func TriesContactsFunc(){
 		// Read in the op and val. Time for Tries. 
 		fmt.Printf("%s\n", op + " - " + val)
 
-
-
 	}
-	
+}
 
+// Design a Trie. 
+
+type TrieLink struct {
+	value rune
+	link *Trie
+}
+
+type Trie struct {
+	childNodes []TrieLink
+	stringEnd bool
+}
+
+func findLink(links []TrieLink, val rune) (*Trie, bool) {
+	return nil, false
+}
+
+func (r *Trie) FetchAndUpdateOrCreate(s string) (*Trie, bool) {
+	return nil, false
+}
+
+func NewTrie() *Trie {
+	return &Trie{stringEnd: true, childNodes: make([]TrieLink, 0)}
 }
