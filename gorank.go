@@ -19,7 +19,7 @@ import "errors"
 // GoRank is the main running application
 // main running application.
 func GoRank() {
-	MergeSortFunc()
+	DepthFirstSearchSolution()
 }
 
 // Balanced Brackets algorithm

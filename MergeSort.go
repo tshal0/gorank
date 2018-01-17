@@ -38,7 +38,7 @@ func MergeSortFunc() {
 	scanner.Split(bufio.ScanWords)
 	for i := 0; i < d; i++ {
 		var ds MSDataSet
-		ds.ScanInts(scanner)
+		ds.ScanInts(scanner, 0)
 		datasets[i] = ds
 	}
 	for i, ds := range datasets {
@@ -54,9 +54,9 @@ func MergeSortFunc() {
 // MSDataSet data structure stores merge sort data set
 // Might actually begin to use this for all int sets.
 type MSDataSet struct {
-	data      []int
-	workspace []int
-	size      int
+	data    []int
+	size    int
+	visited bool
 }
 
 func toInt(buf []byte) (n int) {
@@ -67,15 +67,20 @@ func toInt(buf []byte) (n int) {
 }
 
 // ScanInts scans in a space delimited set of ints
-func (ds *MSDataSet) ScanInts(scanner *bufio.Scanner) {
+func (ds *MSDataSet) ScanInts(scanner *bufio.Scanner, size int) {
 	// Get dataset size
-	scanner.Scan()
-	ds.size = toInt(scanner.Bytes())
+
+	if size == 0 {
+		scanner.Scan()
+		ds.size = toInt(scanner.Bytes())
+	} else {
+		ds.size = size
+	}
 	// Init scanner
 
 	// Init dataset to be size d
 	ds.data = make([]int, ds.size)
-	ds.workspace = make([]int, ds.size)
+
 	for i := 0; i < ds.size; i++ {
 		scanner.Scan()
 		ds.data[i] = toInt(scanner.Bytes())
